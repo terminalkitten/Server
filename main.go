@@ -15,12 +15,12 @@ import (
 func init() {
 	Config.Start()
 	SQL.Start()
+
 	NanofyApp.Start()
 }
 
 func main() {
 	api := http.NewServeMux()
-	api.HandleFunc("/", Security.SetHeaders(Websocket.Start))
 	srv := &http.Server{
 		Addr:    Config.Config["API_IP"] + ":443",
 		Handler: api,
@@ -36,13 +36,16 @@ func main() {
 		},
 	}
 
+	api.HandleFunc("/", Security.SetHeaders(Websocket.Start))
+
 	go func() {
-		log.Panic(srv.ListenAndServeTLS(Config.Dir()+"/../.pki/cert.crt", Config.Dir()+"/../.pki/key.pem"))
+		log.Panic(srv.ListenAndServeTLS(Security.SSL_CERT_PATH, Security.SSL_KEY_PATH))
 	}()
 
-	callback := http.NewServeMux()
-	callback.HandleFunc("/", Security.SetHeaders(Callback.Start))
+
 	// This port SHOULD be closed!
 	// Because the communication occur in localhost there is no need for SSL.
-	log.Panic(http.ListenAndServe(Config.Config["CALLBACK_IP"]+":7771", callback))
+	callback := http.NewServeMux()
+	callback.HandleFunc("/", Callback.Start)
+	log.Panic(http.ListenAndServe(Config.Config["CALLBACK_IP"] + ":7771", callback))
 }

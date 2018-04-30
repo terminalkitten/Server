@@ -29,10 +29,16 @@ func Start() {
 	}
 }
 
-func Dir() string {
+func Dir(path ...string) string {
 	ex, err := os.Executable()
 	if err != nil {
 		log.Panic(err)
 	}
-	return filepath.Dir(ex)
+
+	ex, err = filepath.Abs(filepath.Join(filepath.Dir(ex), filepath.Join(path...)))
+	if err != nil {
+		log.Panic(err)
+	}
+
+	return filepath.ToSlash(ex)
 }
