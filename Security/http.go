@@ -26,6 +26,7 @@ func SetHeaders(fn func(w http.ResponseWriter, r *http.Request)) http.HandlerFun
 
 		w.Header().Add("Referrer-Policy", "same-origin")
 		w.Header().Add("Content-Security-Policy", "default-src 'self'; font-src https://fonts.gstatic.com; connect-src wss://*.nanollet.org; upgrade-insecure-requests; block-all-mixed-content; disown-opener; require-sri-for script style;")
+		w.Header().Add("Feature-Policy", "accelerometer 'none'; ambient-light-sensor 'none'; autoplay 'none'; camera 'none'; encrypted-media 'none'; fullscreen 'none'; geolocation 'none'; gyroscope 'none'; magnetometer 'none'; microphone 'none'; midi 'none'; payment 'none'; picture-in-picture 'none'; speaker 'none'; usb 'none'; vr 'none';")
 
 		w.Header().Add("Public-Key-Pins", "pin-sha256=\""+ CreateKeyPinning(SSL_CERT_PATH) +"\"; pin-sha256=\""+ CreateKeyBackupPinning(SSL_BACKUP_PUBLICKEY_PATH) +"\"; max-age=15768000")
 		w.Header().Add("Expect-CT", "enforce, max-age=31536000")
